@@ -1,0 +1,380 @@
+
+<style>
+  .tabs { display:flex; gap:4px; margin-bottom:16px; }
+  .tab { padding:6px 14px; border-radius:var(--border-radius-md); font-size:13px; cursor:pointer; border:1px solid var(--color-border-tertiary); background:var(--color-background-secondary); color:var(--color-text-secondary); font-weight:400; }
+  .tab.active { background:var(--color-background-primary); color:var(--color-text-primary); border-color:var(--color-border-primary); font-weight:500; }
+  .panel { display:none; }
+  .panel.active { display:block; }
+  #erd svg { max-width:100%; }
+  .rule-card { border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); padding:12px 16px; margin-bottom:10px; display:flex; gap:12px; align-items:flex-start; }
+  .rule-num { font-size:12px; font-weight:500; min-width:22px; height:22px; border-radius:50%; display:flex; align-items:center; justify-content:center; }
+  .rule-body { flex:1; }
+  .rule-title { font-size:13px; font-weight:500; color:var(--color-text-primary); margin-bottom:2px; }
+  .rule-detail { font-size:12px; color:var(--color-text-secondary); }
+  .rule-tag { font-size:11px; padding:2px 7px; border-radius:20px; display:inline-block; margin-top:4px; }
+  .entity-grid { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  .entity-card { border:1px solid var(--color-border-tertiary); border-radius:var(--border-radius-lg); overflow:hidden; }
+  .entity-header { padding:8px 14px; font-size:13px; font-weight:500; display:flex; align-items:center; gap:8px; }
+  .entity-body { padding:4px 0 8px; }
+  .field-row { display:flex; align-items:center; gap:8px; padding:3px 14px; font-size:12px; color:var(--color-text-secondary); }
+  .badge { font-size:10px; padding:1px 5px; border-radius:3px; font-weight:500; }
+  .pk { background:#E6F1FB; color:#185FA5; }
+  .fk { background:#EAF3DE; color:#3B6D11; }
+  .uq { background:#FAEEDA; color:#854F0B; }
+  .en { background:#FBEAF0; color:#993556; }
+  @media (prefers-color-scheme: dark) {
+    .pk { background:#0C447C; color:#B5D4F4; }
+    .fk { background:#27500A; color:#C0DD97; }
+    .uq { background:#633806; color:#FAC775; }
+    .en { background:#72243E; color:#F4C0D1; }
+  }
+  .sep { font-size:11px; color:var(--color-text-tertiary); padding:4px 14px 2px; font-weight:500; letter-spacing:.04em; }
+</style>
+
+<div style="padding:16px 0 0">
+  <div class="tabs">
+    <button class="tab active" onclick="show('erd')">Diagramma ER</button>
+    <button class="tab" onclick="show('entities')">Entità e campi</button>
+    <button class="tab" onclick="show('rules')">Vincoli di business</button>
+  </div>
+
+  <div id="panel-erd" class="panel active">
+    <div id="erd"></div>
+  </div>
+
+  <div id="panel-entities" class="panel">
+    <div class="entity-grid">
+
+      <div class="entity-card">
+        <div class="entity-header" style="background:#E6F1FB;color:#185FA5">
+          <span>User</span><small style="font-weight:400;font-size:11px">auth + ruolo</small>
+        </div>
+        <div class="entity-body">
+          <div class="field-row"><span class="badge pk">PK</span> id (Long)</div>
+          <div class="field-row"><span class="badge uq">UQ</span> email (String)</div>
+          <div class="field-row">password (String — BCrypt)</div>
+          <div class="sep">Stato</div>
+          <div class="field-row"><span class="badge en">ENUM</span> role: USER | ORGANIZER | ADMIN</div>
+          <div class="field-row">enabled (boolean — ban)</div>
+          <div class="sep">Relazioni</div>
+          <div class="field-row"><span class="badge fk">1:1</span> profile</div>
+          <div class="field-row"><span class="badge fk">1:N</span> events (come organizer)</div>
+          <div class="field-row"><span class="badge fk">1:N</span> tickets</div>
+          <div class="field-row"><span class="badge fk">1:N</span> feedbacks</div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-header" style="background:#EAF3DE;color:#3B6D11">
+          <span>Profile</span><small style="font-weight:400;font-size:11px">anagrafica estesa</small>
+        </div>
+        <div class="entity-body">
+          <div class="field-row"><span class="badge pk">PK</span> id (Long)</div>
+          <div class="field-row"><span class="badge fk">FK</span> userId (FK → User)</div>
+          <div class="sep">Campi</div>
+          <div class="field-row">firstName (String)</div>
+          <div class="field-row">lastName (String)</div>
+          <div class="field-row">bio (Text, nullable)</div>
+          <div class="field-row">city (String, nullable)</div>
+          <div class="field-row">photoUrl (String, nullable)</div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-header" style="background:#F1EFE8;color:#2C2C2A">
+          <span>Venue</span><small style="font-weight:400;font-size:11px">sede fisica</small>
+        </div>
+        <div class="entity-body">
+          <div class="field-row"><span class="badge pk">PK</span> id (Long)</div>
+          <div class="field-row">name (String)</div>
+          <div class="field-row">address (String)</div>
+          <div class="field-row">city (String)</div>
+          <div class="field-row">capacity (int) ← capienza fisica</div>
+          <div class="sep">Relazioni</div>
+          <div class="field-row"><span class="badge fk">1:N</span> events</div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-header" style="background:#EEEDFE;color:#3C3489">
+          <span>Event</span><small style="font-weight:400;font-size:11px">entità centrale</small>
+        </div>
+        <div class="entity-body">
+          <div class="field-row"><span class="badge pk">PK</span> id (Long)</div>
+          <div class="field-row">title (String)</div>
+          <div class="field-row">description (Text)</div>
+          <div class="field-row">startDate (LocalDateTime)</div>
+          <div class="field-row">endDate (LocalDateTime)</div>
+          <div class="sep">Prezzi e posti</div>
+          <div class="field-row">standardPrice (BigDecimal)</div>
+          <div class="field-row">vipPrice (BigDecimal)</div>
+          <div class="field-row"><span class="badge en">ENUM</span> status: PUBLISHED | CANCELLED | COMPLETED</div>
+          <div class="sep">FK</div>
+          <div class="field-row"><span class="badge fk">FK</span> organizerId → User</div>
+          <div class="field-row"><span class="badge fk">FK</span> venueId → Venue</div>
+          <div class="sep">Relazioni N:N</div>
+          <div class="field-row"><span class="badge fk">N:N</span> tags</div>
+          <div class="field-row"><span class="badge fk">N:N</span> speakers</div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-header" style="background:#FAEEDA;color:#633806">
+          <span>Ticket</span><small style="font-weight:400;font-size:11px">join entity con dati extra</small>
+        </div>
+        <div class="entity-body">
+          <div class="field-row"><span class="badge pk">PK</span> id (Long)</div>
+          <div class="field-row"><span class="badge fk">FK</span> userId → User</div>
+          <div class="field-row"><span class="badge fk">FK</span> eventId → Event</div>
+          <div class="sep">Dati extra</div>
+          <div class="field-row"><span class="badge en">ENUM</span> type: STANDARD | VIP</div>
+          <div class="field-row">pricePaid (BigDecimal)</div>
+          <div class="field-row"><span class="badge en">ENUM</span> status: ACTIVE | CANCELLED</div>
+          <div class="field-row"><span class="badge uq">UQ</span> (userId, eventId) — no doppia prenotazione</div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-header" style="background:#FAECE7;color:#993C1D">
+          <span>Feedback</span><small style="font-weight:400;font-size:11px">post-evento</small>
+        </div>
+        <div class="entity-body">
+          <div class="field-row"><span class="badge pk">PK</span> id (Long)</div>
+          <div class="field-row"><span class="badge fk">FK</span> userId → User</div>
+          <div class="field-row"><span class="badge fk">FK</span> eventId → Event</div>
+          <div class="sep">Dati</div>
+          <div class="field-row">rating (int, 1–5)</div>
+          <div class="field-row">comment (Text)</div>
+          <div class="field-row">createdAt (LocalDateTime)</div>
+          <div class="field-row"><span class="badge uq">UQ</span> (userId, eventId) — un solo feedback</div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-header" style="background:#E1F5EE;color:#0F6E56">
+          <span>Speaker</span><small style="font-weight:400;font-size:11px">catalogo condiviso</small>
+        </div>
+        <div class="entity-body">
+          <div class="field-row"><span class="badge pk">PK</span> id (Long)</div>
+          <div class="field-row">firstName (String)</div>
+          <div class="field-row">lastName (String)</div>
+          <div class="field-row">bio (Text, nullable)</div>
+          <div class="field-row">photoUrl (String, nullable)</div>
+          <div class="sep">Relazioni</div>
+          <div class="field-row"><span class="badge fk">N:N</span> events (tabella event_speakers)</div>
+        </div>
+      </div>
+
+      <div class="entity-card">
+        <div class="entity-header" style="background:#FBEAF0;color:#72243E">
+          <span>Tag</span><small style="font-weight:400;font-size:11px">categoria evento</small>
+        </div>
+        <div class="entity-body">
+          <div class="field-row"><span class="badge pk">PK</span> id (Long)</div>
+          <div class="field-row"><span class="badge uq">UQ</span> name (String)</div>
+          <div class="sep">Relazioni</div>
+          <div class="field-row"><span class="badge fk">N:N</span> events (tabella event_tags)</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <div id="panel-rules" class="panel">
+    <div class="rule-card">
+      <div class="rule-num" style="background:#E6F1FB;color:#185FA5">1</div>
+      <div class="rule-body">
+        <div class="rule-title">Capienza fisica</div>
+        <div class="rule-detail">I posti disponibili si calcolano come <code>venue.capacity − count(tickets WHERE status=ACTIVE AND eventId=?)</code>. Bloccare la prenotazione se availableSeats = 0.</div>
+        <span class="rule-tag" style="background:#E6F1FB;color:#185FA5">Venue · Ticket</span>
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num" style="background:#EAF3DE;color:#3B6D11">2</div>
+      <div class="rule-body">
+        <div class="rule-title">No doppia prenotazione</div>
+        <div class="rule-detail">Unique constraint a livello DB su <code>(userId, eventId)</code> in Ticket. Gestire il conflitto con errore 409 nel global exception handler.</div>
+        <span class="rule-tag" style="background:#EAF3DE;color:#3B6D11">Ticket — @UniqueConstraint</span>
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num" style="background:#FAEEDA;color:#633806">3</div>
+      <div class="rule-body">
+        <div class="rule-title">No prenotazioni nel passato</div>
+        <div class="rule-detail">Nel service, verificare che <code>event.startDate.isAfter(LocalDateTime.now())</code> prima di creare il Ticket. Errore 400 in caso contrario.</div>
+        <span class="rule-tag" style="background:#FAEEDA;color:#633806">Event · Ticket — logica service</span>
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num" style="background:#FAEEDA;color:#633806">4</div>
+      <div class="rule-body">
+        <div class="rule-title">Cancellazione solo prima dell'evento</div>
+        <div class="rule-detail">La DELETE di un Ticket è consentita solo se <code>event.startDate.isAfter(now())</code>. Dopo l'inizio il ticket rimane con status ACTIVE come "partecipazione".</div>
+        <span class="rule-tag" style="background:#FAEEDA;color:#633806">Ticket — logica service</span>
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num" style="background:#FAECE7;color:#993C1D">5</div>
+      <div class="rule-body">
+        <div class="rule-title">Feedback solo a posteriori</div>
+        <div class="rule-detail">Verificare: (a) <code>event.endDate.isBefore(now())</code> e (b) esiste almeno un Ticket con <code>status=ACTIVE</code> per quell'utente e quell'evento.</div>
+        <span class="rule-tag" style="background:#FAECE7;color:#993C1D">Feedback · Ticket · Event</span>
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num" style="background:#FAECE7;color:#993C1D">6</div>
+      <div class="rule-body">
+        <div class="rule-title">Un solo feedback per evento</div>
+        <div class="rule-detail">Unique constraint su <code>(userId, eventId)</code> in Feedback. Come per i ticket, gestire il 409.</div>
+        <span class="rule-tag" style="background:#FAECE7;color:#993C1D">Feedback — @UniqueConstraint</span>
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num" style="background:#EEEDFE;color:#3C3489">7</div>
+      <div class="rule-body">
+        <div class="rule-title">Solo il creatore o l'admin può modificare/cancellare un evento</div>
+        <div class="rule-detail">Nel service verificare <code>event.organizerId == currentUser.id || currentUser.role == ADMIN</code>. Errore 403 altrimenti.</div>
+        <span class="rule-tag" style="background:#EEEDFE;color:#3C3489">Event · User — logica service</span>
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num" style="background:#F1EFE8;color:#2C2C2A">8</div>
+      <div class="rule-body">
+        <div class="rule-title">Utente bannato</div>
+        <div class="rule-detail"><code>user.enabled = false</code> blocca il login (Spring Security lo gestisce in automatico con <code>UserDetails.isEnabled()</code>). Al ban, i Ticket futuri vanno impostati a CANCELLED in batch.</div>
+        <span class="rule-tag" style="background:#F1EFE8;color:#2C2C2A">User — Spring Security + Ticket</span>
+      </div>
+    </div>
+    <div class="rule-card">
+      <div class="rule-num" style="background:#E1F5EE;color:#0F6E56">9</div>
+      <div class="rule-body">
+        <div class="rule-title">VIP costa più di standard</div>
+        <div class="rule-detail">Validazione su Event: <code>vipPrice > standardPrice</code>. Da inserire in un @Validator custom o come controllo nel service prima del salvataggio.</div>
+        <span class="rule-tag" style="background:#E1F5EE;color:#0F6E56">Event — Bean Validation / service</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+import mermaid from 'https://esm.sh/mermaid@11/dist/mermaid.esm.min.mjs';
+const dark = matchMedia('(prefers-color-scheme: dark)').matches;
+await document.fonts.ready;
+mermaid.initialize({
+  startOnLoad: false,
+  theme: 'base',
+  fontFamily: '"Anthropic Sans", sans-serif',
+  themeVariables: {
+    darkMode: dark,
+    fontSize: '13px',
+    fontFamily: '"Anthropic Sans", sans-serif',
+    lineColor: dark ? '#9c9a92' : '#73726c',
+    textColor: dark ? '#c2c0b6' : '#3d3d3a',
+  },
+});
+const diagram = `erDiagram
+  USER {
+    Long id PK
+    string email UK
+    string password
+    string role
+    boolean enabled
+  }
+  PROFILE {
+    Long id PK
+    Long userId FK
+    string firstName
+    string lastName
+    string city
+    string bio
+    string photoUrl
+  }
+  VENUE {
+    Long id PK
+    string name
+    string address
+    string city
+    int capacity
+  }
+  EVENT {
+    Long id PK
+    Long organizerId FK
+    Long venueId FK
+    string title
+    datetime startDate
+    datetime endDate
+    decimal standardPrice
+    decimal vipPrice
+    string status
+  }
+  TAG {
+    Long id PK
+    string name UK
+  }
+  SPEAKER {
+    Long id PK
+    string firstName
+    string lastName
+    string bio
+    string photoUrl
+  }
+  TICKET {
+    Long id PK
+    Long userId FK
+    Long eventId FK
+    string type
+    decimal pricePaid
+    string status
+  }
+  FEEDBACK {
+    Long id PK
+    Long userId FK
+    Long eventId FK
+    int rating
+    text comment
+    datetime createdAt
+  }
+  USER ||--|| PROFILE : "ha"
+  USER ||--o{ EVENT : "organizza"
+  USER ||--o{ TICKET : "prenota"
+  USER ||--o{ FEEDBACK : "lascia"
+  VENUE ||--o{ EVENT : "ospita"
+  EVENT }o--o{ TAG : "categorizzato da"
+  EVENT }o--o{ SPEAKER : "presenta"
+  EVENT ||--o{ TICKET : "riceve"
+  EVENT ||--o{ FEEDBACK : "riceve"
+`;
+const { svg } = await mermaid.render('erd-svg', diagram);
+document.getElementById('erd').innerHTML = svg;
+
+document.querySelectorAll('#erd svg.erDiagram .node').forEach(node => {
+  const firstPath = node.querySelector('path[d]');
+  if (!firstPath) return;
+  const d = firstPath.getAttribute('d');
+  const nums = d.match(/-?[\d.]+/g)?.map(Number);
+  if (!nums || nums.length < 8) return;
+  const xs = [nums[0], nums[2], nums[4], nums[6]];
+  const ys = [nums[1], nums[3], nums[5], nums[7]];
+  const x = Math.min(...xs), y = Math.min(...ys);
+  const w = Math.max(...xs) - x, h = Math.max(...ys) - y;
+  const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+  rect.setAttribute('x', x); rect.setAttribute('y', y);
+  rect.setAttribute('width', w); rect.setAttribute('height', h);
+  rect.setAttribute('rx', '8');
+  for (const a of ['fill', 'stroke', 'stroke-width', 'class', 'style']) {
+    if (firstPath.hasAttribute(a)) rect.setAttribute(a, firstPath.getAttribute(a));
+  }
+  firstPath.replaceWith(rect);
+});
+document.querySelectorAll('#erd svg.erDiagram .row-rect-odd path, #erd svg.erDiagram .row-rect-even path').forEach(p => {
+  p.setAttribute('stroke', 'none');
+});
+</script>
+<script>
+function show(tab) {
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  event.target.classList.add('active');
+  document.getElementById('panel-'+tab).classList.add('active');
+}
+</script>
