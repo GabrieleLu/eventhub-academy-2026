@@ -1,11 +1,13 @@
 package com.gabriele.eventhub.controller;
 
 import com.gabriele.eventhub.dto.SignupRequestDTO;
+
 import com.gabriele.eventhub.service.AuthService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.core.Authentication;
 
 @RestController
 @RequestMapping("/auth")
@@ -22,5 +24,8 @@ public class AuthController {
         authService.signup(dto);
         return ResponseEntity.ok("Registrazione avvenuta con successo");
     }
+
+    
+    
 
 }
