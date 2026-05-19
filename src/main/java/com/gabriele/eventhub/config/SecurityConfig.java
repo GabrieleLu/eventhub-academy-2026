@@ -30,8 +30,8 @@ public class SecurityConfig {
             "SELECT email, password, enabled FROM users WHERE email = ?"
         );
         manager.setAuthoritiesByUsernameQuery(
-            "SELECT email, role FROM users WHERE email = ?"
-        );
+        	    "SELECT email, CONCAT('ROLE_', role) FROM users WHERE email = ?"
+        	);
         return manager;
     }
 
@@ -41,6 +41,7 @@ public class SecurityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
                 .requestMatchers("/auth/**").permitAll()
+                .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
             )
             .httpBasic(httpBasic -> httpBasic.realmName("EventHub"));
