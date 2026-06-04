@@ -50,6 +50,17 @@ public class Event {
         inverseJoinColumns = @JoinColumn(name = "tag_id")
     )
     private List<Tag> tags;
+    
+    @ManyToMany
+    @JoinTable(
+        name = "event_speakers",
+        joinColumns = @JoinColumn(name = "event_id"),
+        inverseJoinColumns = @JoinColumn(name = "speaker_id")
+    )
+    private List<Speaker> speakers;
+
+    public List<Speaker> getSpeakers() { return speakers; }
+    public void setSpeakers(List<Speaker> speakers) { this.speakers = speakers; }
 
     public List<Tag> getTags() { return tags; }
     public void setTags(List<Tag> tags) { this.tags = tags; }

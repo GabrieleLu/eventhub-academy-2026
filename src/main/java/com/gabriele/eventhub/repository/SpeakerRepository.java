@@ -1,0 +1,7 @@
+package com.gabriele.eventhub.repository;
+
+import com.gabriele.eventhub.entity.Speaker;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+public interface SpeakerRepository extends JpaRepository<Speaker, Long> {
+}
