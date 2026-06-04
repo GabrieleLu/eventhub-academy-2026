@@ -1,61 +1,42 @@
-package com.gabriele.eventhub.entity;
+package com.gabriele.eventhub.dto;
 
-import jakarta.persistence.*;
+import com.gabriele.eventhub.entity.EventStatus;
+import jakarta.validation.constraints.*;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
 
-@Entity
-@Table(name = "events")
-public class Event {
+public class EventRequestDTO {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
-
-    @Column(nullable = false)
+    @NotBlank(message = "Titolo obbligatorio")
+    @Size(min = 3, max = 200, message = "Titolo deve essere tra 3 e 200 caratteri")
     private String title;
 
-    @Column(columnDefinition = "TEXT")
+    @NotBlank(message = "Descrizione obbligatoria")
+    @Size(min = 10, max = 2000, message = "Descrizione deve essere tra 10 e 2000 caratteri")
     private String description;
 
-    @Column(nullable = false)
+    @NotNull(message = "Data inizio obbligatoria")
     private LocalDateTime startDate;
 
-    @Column(nullable = false)
+    @NotNull(message = "Data fine obbligatoria")
     private LocalDateTime endDate;
 
-    @Column(nullable = false)
+    @NotNull(message = "Prezzo standard obbligatorio")
+    @DecimalMin(value = "0.01", message = "Prezzo standard deve essere maggiore di 0")
     private BigDecimal standardPrice;
 
-    @Column(nullable = false)
+    @NotNull(message = "Prezzo VIP obbligatorio")
+    @DecimalMin(value = "0.01", message = "Prezzo VIP deve essere maggiore di 0")
     private BigDecimal vipPrice;
 
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @NotNull(message = "Stato evento obbligatorio")
     private EventStatus status;
 
-    @ManyToOne
-    @JoinColumn(name = "venue_id", nullable = false)
-    private Venue venue;
+    @NotNull(message = "Sede obbligatoria")
+    private Long venueId;
 
-    @ManyToOne
-    @JoinColumn(name = "organizer_id", nullable = false)
-    private User organizer;
-    
-    @ManyToMany
-    @JoinTable(
-        name = "event_tags",
-        joinColumns = @JoinColumn(name = "event_id"),
-        inverseJoinColumns = @JoinColumn(name = "tag_id")
-    )
-    private List<Tag> tags;
-
-    public List<Tag> getTags() { return tags; }
-    public void setTags(List<Tag> tags) { this.tags = tags; }
-
-    public Long getId() { return id; }
-    public void setId(Long id) { this.id = id; }
+    private List<Long> tagIds;
 
     public String getTitle() { return title; }
     public void setTitle(String title) { this.title = title; }
@@ -78,9 +59,9 @@ public class Event {
     public EventStatus getStatus() { return status; }
     public void setStatus(EventStatus status) { this.status = status; }
 
-    public Venue getVenue() { return venue; }
-    public void setVenue(Venue venue) { this.venue = venue; }
+    public Long getVenueId() { return venueId; }
+    public void setVenueId(Long venueId) { this.venueId = venueId; }
 
-    public User getOrganizer() { return organizer; }
-    public void setOrganizer(User organizer) { this.organizer = organizer; }
+    public List<Long> getTagIds() { return tagIds; }
+    public void setTagIds(List<Long> tagIds) { this.tagIds = tagIds; }
 }

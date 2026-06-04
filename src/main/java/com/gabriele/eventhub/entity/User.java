@@ -1,5 +1,7 @@
 package com.gabriele.eventhub.entity;
 
+import java.util.List;
+
 import jakarta.persistence.*;
 
 @Entity
@@ -25,6 +27,12 @@ public class User {
 
     @OneToOne(mappedBy = "user", cascade = CascadeType.ALL)
     private Profile profile;
+    
+    @OneToMany(mappedBy = "organizer")
+    private List<Event> events;
+
+    public List<Event> getEvents() { return events; }
+    public void setEvents(List<Event> events) { this.events = events; }
 
     public Long getId() { return id; }
     public void setId(Long id) { this.id = id; }
