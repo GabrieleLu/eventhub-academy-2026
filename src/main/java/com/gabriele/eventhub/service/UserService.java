@@ -3,6 +3,7 @@ package com.gabriele.eventhub.service;
 import com.gabriele.eventhub.dto.UserResponseDTO;
 import com.gabriele.eventhub.dto.UserUpdateDTO;
 import com.gabriele.eventhub.entity.User;
+import com.gabriele.eventhub.exception.ResourceNotFoundException;
 import com.gabriele.eventhub.repository.UserRepository;
 import org.springframework.stereotype.Service;
 
@@ -42,13 +43,13 @@ public class UserService {
 
     public UserResponseDTO findById(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato"));
         return toDTO(user);
     }
 
     public UserResponseDTO update(Long id, UserUpdateDTO dto) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato"));
 
         if (dto.getEmail() != null) {
             user.setEmail(dto.getEmail());
@@ -66,7 +67,7 @@ public class UserService {
 
     public void delete(Long id) {
         User user = userRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato"));
         userRepository.deleteById(user.getId());
     }
 

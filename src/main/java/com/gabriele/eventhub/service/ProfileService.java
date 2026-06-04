@@ -4,6 +4,8 @@ import com.gabriele.eventhub.dto.ProfileRequestDTO;
 import com.gabriele.eventhub.dto.ProfileResponseDTO;
 import com.gabriele.eventhub.entity.Profile;
 import com.gabriele.eventhub.entity.User;
+import com.gabriele.eventhub.exception.ResourceNotFoundException;
+import com.gabriele.eventhub.exception.ValidationException;
 import com.gabriele.eventhub.repository.ProfileRepository;
 import com.gabriele.eventhub.repository.UserRepository;
 import org.springframework.stereotype.Service;
@@ -21,18 +23,18 @@ public class ProfileService {
 
     public ProfileResponseDTO getProfile(String email) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato"));
         Profile profile = profileRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new RuntimeException("Profilo non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Profilo non trovato"));
         return toDTO(profile);
     }
 
     public ProfileResponseDTO createProfile(String email, ProfileRequestDTO dto) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato"));
 
         if (profileRepository.findByUserId(user.getId()).isPresent()) {
-            throw new RuntimeException("Profilo già esistente");
+            throw new ValidationException("Profilo già esistente");
         }
 
         Profile profile = new Profile();
@@ -49,9 +51,9 @@ public class ProfileService {
 
     public ProfileResponseDTO updateProfile(String email, ProfileRequestDTO dto) {
         User user = userRepository.findByEmail(email)
-                .orElseThrow(() -> new RuntimeException("Utente non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Utente non trovato"));
         Profile profile = profileRepository.findByUserId(user.getId())
-                .orElseThrow(() -> new RuntimeException("Profilo non trovato"));
+                .orElseThrow(() -> new ResourceNotFoundException("Profilo non trovato"));
 
         if (dto.getFirstName() != null) profile.setFirstName(dto.getFirstName());
         if (dto.getLastName() != null) profile.setLastName(dto.getLastName());
