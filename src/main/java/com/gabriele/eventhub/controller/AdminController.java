@@ -39,4 +39,9 @@ public class AdminController {
         userService.delete(id);
         return ResponseEntity.noContent().build();
     }
+    
+    @PutMapping("/users/{id}/role")
+    public ResponseEntity<UserResponseDTO> updateRole(@PathVariable Long id, @RequestBody UserUpdateDTO dto) {
+        return ResponseEntity.ok(userService.update(id, dto));
+    }
 }

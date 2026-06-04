@@ -1,17 +1,27 @@
 package com.gabriele.eventhub.dto;
 
+
+import org.hibernate.validator.constraints.URL;
+
 import jakarta.validation.constraints.NotBlank;
+
+import jakarta.validation.constraints.Size;
+
 
 public class ProfileRequestDTO {
 
     @NotBlank(message = "Nome obbligatorio")
+    @Size(min = 1, max = 50, message = "Nome deve essere tra 1 e 50 caratteri")
     private String firstName;
 
     @NotBlank(message = "Cognome obbligatorio")
+    @Size(min = 1, max = 50, message = "Cognome deve essere tra 1 e 50 caratteri")
     private String lastName;
 
+    @Size(max = 500, message = "Bio può contenere max 500 caratteri")
     private String bio;
 
+    @URL(message = "URL foto non valido")
     private String city;
 
     private String photoUrl;

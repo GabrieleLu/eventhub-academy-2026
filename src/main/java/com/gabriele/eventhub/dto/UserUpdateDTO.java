@@ -2,6 +2,7 @@ package com.gabriele.eventhub.dto;
 
 import com.gabriele.eventhub.entity.Role;
 import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Size;
 
 public class UserUpdateDTO {
 	
@@ -11,7 +12,8 @@ public class UserUpdateDTO {
 	 * 
 	 */
 
-    @Email(message = "Formato email non valido")
+	@Email(message = "Formato email non valido")
+	@Size(min = 5, max = 100, message = "Email deve essere tra 5 e 100 caratteri")
     private String email;
 
     private Role role;
