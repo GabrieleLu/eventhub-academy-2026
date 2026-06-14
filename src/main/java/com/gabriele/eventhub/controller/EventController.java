@@ -13,6 +13,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -28,8 +29,14 @@ public class EventController {
     }
 
     @GetMapping
-    public ResponseEntity<List<EventResponseDTO>> findAll() {
-        return ResponseEntity.ok(eventService.findAll());
+    public ResponseEntity<List<EventResponseDTO>> findAll(
+            @RequestParam(required = false) LocalDateTime startDate,
+            @RequestParam(required = false) LocalDateTime endDate,
+            @RequestParam(required = false) Long venueId,
+            @RequestParam(required = false) Long organizerId,
+            @RequestParam(required = false) Long tagId) {
+        
+        return ResponseEntity.ok(eventService.findByFilters(startDate, endDate, venueId, organizerId, tagId));
     }
 
     @GetMapping("/{id}")
