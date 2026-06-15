@@ -40,10 +40,11 @@ public class SecurityConfig {
         http
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth -> auth
-                .requestMatchers("/auth/**").permitAll()
-                .requestMatchers("/admin/**").hasRole("ADMIN")
-                .anyRequest().authenticated()
-            )
+            	    .requestMatchers("/auth/**").permitAll()
+            	    .requestMatchers("/swagger-ui/**", "/v3/api-docs/**").permitAll()  // ← aggiungi questa riga
+            	    .requestMatchers("/admin/**").hasRole("ADMIN")
+            	    .anyRequest().authenticated()
+            	)
             .httpBasic(httpBasic -> httpBasic.realmName("EventHub"));
 
         return http.build();

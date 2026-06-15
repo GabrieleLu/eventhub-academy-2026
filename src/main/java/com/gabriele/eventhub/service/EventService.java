@@ -12,6 +12,8 @@ import com.gabriele.eventhub.repository.EventRepository;
 import com.gabriele.eventhub.repository.TagRepository;
 import com.gabriele.eventhub.repository.UserRepository;
 import com.gabriele.eventhub.repository.VenueRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -35,13 +37,9 @@ public class EventService {
 		this.tagRepository = tagRepository;
 	}
 
-	public List<EventResponseDTO> findAll() {
-		List<Event> events = eventRepository.findAll();
-		List<EventResponseDTO> result = new ArrayList<>();
-		for (Event event : events) {
-			result.add(toDTO(event));
-		}
-		return result;
+	public Page<EventResponseDTO> findAll(Pageable pageable) {
+		Page<Event> events = eventRepository.findAll(pageable);
+		return events.map(this::toDTO);
 	}
 
 	public EventResponseDTO findById(Long id) {
