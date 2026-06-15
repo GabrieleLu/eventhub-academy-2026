@@ -60,6 +60,10 @@ public class EventService {
 		if (dto.getVipPrice().compareTo(dto.getStandardPrice()) <= 0) {
 			throw new ValidationException("Il prezzo VIP deve essere maggiore del prezzo standard");
 		}
+		
+		if (dto.getEndDate().isBefore(dto.getStartDate())) {
+		    throw new ValidationException("La data di fine deve essere successiva alla data di inizio");
+		}
 
 		Event event = new Event();
 		event.setTitle(dto.getTitle());
@@ -95,6 +99,10 @@ public class EventService {
 
 		if (!event.getOrganizer().getId().equals(currentUser.getId())) {
 			throw new ValidationException("Puoi modificare solo i tuoi eventi");
+		}
+		
+		if (dto.getEndDate().isBefore(dto.getStartDate())) {
+		    throw new ValidationException("La data di fine deve essere successiva alla data di inizio");
 		}
 
 		event.setTitle(dto.getTitle());

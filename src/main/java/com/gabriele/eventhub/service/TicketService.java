@@ -11,6 +11,7 @@ import com.gabriele.eventhub.repository.UserRepository;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -48,10 +49,25 @@ public class TicketService {
 
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ResourceNotFoundException("Evento non trovato"));
+        
+        if (event.getEndDate().isBefore(LocalDateTime.now())) {
+            throw new ValidationException("Non puoi prenotare un evento già terminato");
+        }
 
+        
+        boolean alreadyBooked = ticketRepository.existsByUserIdAndEventIdAndStatus(
+                user.getId(), eventId, TicketStatus.ACTIVE);
+
+        if (alreadyBooked) {
+            throw new ValidationException("Hai già una prenotazione attiva per questo evento");
+        }
+        
         if (getAvailableSeats(eventId) <= 0) {
             throw new ValidationException("Nessun posto disponibile per questo evento");
         }
+        
+        
+        
 
         Ticket ticket = new Ticket();
         ticket.setUser(user);
