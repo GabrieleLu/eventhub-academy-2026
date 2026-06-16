@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EventHub Academy 2026</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <h1 class="navbar-brand">EventHub Academy 2026</h1>
+            <div class="navbar-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="events.html" class="nav-link" id="navEvents">Eventi</a>
+                <a href="organizer-events.html" class="nav-link" id="navOrganizer" style="display:none;">I miei eventi</a>
+                <a href="admin.html" class="nav-link" id="navAdmin" style="display:none;">Admin</a>
+                <a href="my-bookings.html" class="nav-link" id="navBookings">Le mie prenotazioni</a>
+                <span id="userEmail" class="nav-user"></span>
+                <button id="logoutBtn" class="btn-logout" style="display:none;">Logout</button>
+                <a href="login.html" class="btn-login" id="loginLink">Login</a>
+                <a href="signup.html" class="btn-signup">Registrati</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <section class="hero">
+            <h2>Benvenuto su EventHub Academy 2026</h2>
+            <p>Scopri, prenota e condividi i migliori eventi</p>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 EventHub Academy. Tutti i diritti riservati.</p>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

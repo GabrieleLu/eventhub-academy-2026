@@ -21,9 +21,10 @@ public class ProfileRequestDTO {
     @Size(max = 500, message = "Bio può contenere max 500 caratteri")
     private String bio;
 
-    @URL(message = "URL foto non valido")
+    
     private String city;
-
+    
+    @URL(message = "URL foto non valido")
     private String photoUrl;
 
     public String getFirstName() { return firstName; }

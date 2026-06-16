@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrazione - EventHub Academy 2026</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Navbar -->
+    <nav class="navbar">
+        <div class="navbar-container">
+            <h1 class="navbar-brand">EventHub Academy 2026</h1>
+            <div class="navbar-menu">
+                <a href="index.html" class="nav-link">Home</a>
+                <a href="login.html" class="btn-login">Login</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="container">
+        <div class="auth-form">
+            <h2>Registrazione</h2>
+            <form id="signupForm">
+                <div class="form-group">
+                    <label for="signupEmail">Email:</label>
+                    <input type="email" id="signupEmail" name="email" required placeholder="user@example.com">
+                </div>
+                <div class="form-group">
+                    <label for="signupPassword">Password:</label>
+                    <input type="password" id="signupPassword" name="password" required placeholder="password123">
+                </div>
+                <div class="form-group">
+                    <label for="signupRole">Ruolo:</label>
+                    <select id="signupRole" name="role">
+                        <option value="USER">Utente</option>
+                        <option value="ORGANIZER">Organizzatore</option>
+                    </select>
+                </div>
+                <button type="submit" class="btn-primary">Registrati</button>
+                <div id="signupError" class="error-message" style="display:none;"></div>
+                <p class="auth-link">Hai già un account? <a href="login.html">Accedi qui</a></p>
+            </form>
+        </div>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <p>&copy; 2026 EventHub Academy. Tutti i diritti riservati.</p>
+    </footer>
+
+    <script src="auth.js"></script>
+    <script src="signup.js"></script>
+</body>
+</html>
